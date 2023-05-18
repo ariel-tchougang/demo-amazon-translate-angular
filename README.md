@@ -10,7 +10,7 @@ This project has 2 folders:
 
 ## AWS Lambda API
 
-You'll need to have AWS account and AWS SAM CLI + npm installed.
+You'll need to have AWS account and AWS SAM CLI + npm + Angular CLI installed.
 
 ### Build the app
 
