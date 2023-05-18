@@ -1,0 +1,4 @@
+<select [(ngModel)]="selectedIso2" (change)="onLanguageChange()">
+  <option value="" disabled selected>{{placeholder}}</option>
+  <option *ngFor="let language of languages" [value]="language.iso2">{{language.nativeName}}</option>
+</select>

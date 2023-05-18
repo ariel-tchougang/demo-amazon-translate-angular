@@ -1,0 +1,12 @@
+<div class="row">
+  <app-language-select placeholder="Select a source language" (languageSelected)="onSourceLanguageSelected($event)"></app-language-select>
+  <app-language-select placeholder="Select a target language" (languageSelected)="onTargetLanguageSelected($event)"></app-language-select>
+</div>
+<div>
+  <textarea [(ngModel)]="textToTranslate"></textarea>
+</div>
+<button [disabled]="onInvalidParameters()" (click)="onTranslate()">Translate</button>
+
+<div>
+  <textarea [disabled]="true" [(ngModel)]="translatedText"></textarea>
+</div>
