@@ -4,21 +4,21 @@ const translate = new AWS.Translate();
 
 exports.handler = async (event) => {
     try {
-        // Parse the body of the request
+        // Parsing the body of the request
         const body = JSON.parse(event.body);
         const { source, target, text } = body;
 
-        // Define the parameters for the translate call
+        // Defining Amazon Translate payload
         const params = {
-            SourceLanguageCode: source, // ISO 639-1 language code
-            TargetLanguageCode: target, // ISO 639-1 language code
+            SourceLanguageCode: source,
+            TargetLanguageCode: target,
             Text: text,
         };
 
-        // Call Amazon Translate to translate the text
+        // Calling Amazon Translate
         const data = await translate.translateText(params).promise();
 
-        // Return the translated text
+        // Returning the translated text
         const response = {
             statusCode: 200,
             headers: {
