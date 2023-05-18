@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  deepl-clone application
+
+  Sample SAM Template for deepl-clone
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Architectures:
+      - x86_64
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
+
+Resources:
+  LambdaLoggingPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows basic logging actions for Lambda functions
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: '*'
+  AWSTranslatePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows Lambda functions to call api translate:TranslateText
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - translate:TranslateText
+            Resource: '*'
+  FetchLanguagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: translate-app/
+      Handler: fetch-languages.handler
+      Runtime: nodejs16.x
+      AutoPublishAlias: demo
+      Events:
+        FetchLanguages:
+          Type: Api
+          Properties:
+            Path: /languages
+            Method: get
+      Policies:
+        - !Ref LambdaLoggingPolicy
+  TranslateTextFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: translate-app/
+      Handler: translate.handler
+      Runtime: nodejs16.x
+      AutoPublishAlias: demo
+      Events:
+        TranslateText:
+          Type: Api
+          Properties:
+            Path: /translate
+            Method: post
+      Policies:
+        - !Ref LambdaLoggingPolicy
+        - !Ref AWSTranslatePolicy
+
+Outputs:
+  TranslateApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com"
+  FetchLanguagesFunction:
+    Description: "Fetch Languages Lambda Function ARN"
+    Value: !GetAtt FetchLanguagesFunction.Arn
+  FetchLanguagesFunctionIamRole:
+    Description: "Implicit IAM Role created for Fetch Languages function"
+    Value: !GetAtt FetchLanguagesFunctionRole.Arn
+  TranslateTextFunction:
+    Description: "Translate Text Lambda Function ARN"
+    Value: !GetAtt TranslateTextFunction.Arn
+  TranslateTextFunctionIamRole:
+    Description: "Implicit IAM Role created for Translate Text function"
+    Value: !GetAtt TranslateTextFunctionRole.Arn
